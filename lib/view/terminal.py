@@ -101,22 +101,22 @@ class CLI:
 
 
     def status_report(self, response, full_url):
-        target = response.url if full_url else "/" + response.full_path
-        # Get time from datetime string
-        time = response.datetime.split()[1]
-        message = f"[{time}] {response.status} - {response.size.rjust(6, ' ')} - {target}"
+        # status & size
+        message = f"[Status: {response.status}, Size: {response.size}]\t"
         message = self.set_color_status(message, response.status)
 
-        else:
-            message = set_color(message, fore="magenta")
+        # URL
+        message += response.url if full_url else "/" + response.full_path
 
+        # redirect
         if response.redirect:
-            message += f"  ->  {response.redirect}"
+            message += f" --> {response.redirect}"
 
         for redirect in response.history:
-            message += f"\n-->  {redirect}"
+            message += f"\n--> {redirect}"
 
         self.new_line(message)
+
 
     def last_path(self, index, length, current_job, all_jobs, rate, errors):
         percentage = int(index / length * 100)
