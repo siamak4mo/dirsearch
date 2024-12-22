@@ -85,22 +85,28 @@ class CLI:
             self.buffer += string
             self.buffer += "\n"
 
+    def set_color_status(self, message, res_code):
+        if res_code in (200, 201, 204):
+            return set_color(message, fore="green")
+        elif res_code == 401:
+            return set_color(message, fore="yellow")
+        elif res_code == 403:
+            return set_color(message, fore="blue")
+        elif res_code in range(500,600):
+            return set_color(message, fore="red")
+        elif res_code in range(300,400):
+            return set_color(message, fore="cyan")
+        else:
+            return set_color(message, fore="magenta")
+
+
     def status_report(self, response, full_url):
         target = response.url if full_url else "/" + response.full_path
         # Get time from datetime string
         time = response.datetime.split()[1]
         message = f"[{time}] {response.status} - {response.size.rjust(6, ' ')} - {target}"
+        message = self.set_color_status(message, response.status)
 
-        if response.status in (200, 201, 204):
-            message = set_color(message, fore="green")
-        elif response.status == 401:
-            message = set_color(message, fore="yellow")
-        elif response.status == 403:
-            message = set_color(message, fore="blue")
-        elif response.status in range(500, 600):
-            message = set_color(message, fore="red")
-        elif response.status in range(300, 400):
-            message = set_color(message, fore="cyan")
         else:
             message = set_color(message, fore="magenta")
 
