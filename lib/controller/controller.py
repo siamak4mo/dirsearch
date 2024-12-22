@@ -443,6 +443,15 @@ class Controller:
         )
         self.fuzzer.pause()
 
+        if options["quiet"]:
+            quitexc = QuitInterrupt("Canceled by the user")
+            if options["async_mode"]:
+                self.pause_future.set_exception(quitexc)
+                return
+            else:
+                raise quitexc
+
+
         while True:
             msg = "[q]uit / [c]ontinue"
 
